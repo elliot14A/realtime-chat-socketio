@@ -1,7 +1,7 @@
 version: "3"
 services:
   database:
-    image: postgres:11.7-alpine
+    image: postgres:latest
     ports:
       - "5432:5432"
     volumes:
@@ -20,12 +20,6 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    volumes:
-      - type: bind
-        source: ./server
-        target: /app
-      - /app/node_modules
-    restart: unless-stopped
     ports:
       - "8080:8080"
     stdin_open: true
@@ -40,11 +34,6 @@ services:
     build:
       context: ./web
       dockerfile: Dockerfile
-    volumes:
-      - type: bind
-        source: ./web
-        target: /app
-      - /app/node_modules
     restart: unless-stopped
     stdin_open: true
     depends_on:

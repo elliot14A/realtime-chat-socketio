@@ -6,6 +6,7 @@ import { initRoutes } from "./routes";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import cors from "cors";
+import { handleSocket } from "./utils/socket-io";
 
 async function main() {
   configDotenv();
@@ -37,13 +38,8 @@ async function main() {
       origin: "*",
     },
   });
-  io.on("connection", async (socket) => {
-    logger.info(`new socket connection with id:${socket.id}`);
-    socket.emit("ok");
-    socket.on("disconnect", () => {
-      logger.info("socket disconnect");
-    });
-  });
+  // create a logger middleware for socket io
+  handleSocket(io);
   httpServer.listen(PORT, () => {
     logger.info(`server running at port:${PORT}`);
   });

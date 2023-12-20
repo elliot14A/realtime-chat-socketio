@@ -33,7 +33,7 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [currentRoom, setCurrentRoom] = useState("General");
-  const [name, setName] = useState(null);
+  const [name, setName] = useState("disconnected");
   const [socket, setSocket] = useState(null);
   const [connected, setConnected] = useState(false);
   const onceRef = useRef(false);
@@ -57,16 +57,21 @@ function App() {
 
     socket.on("connect", () => {
       console.log("Connected to socket server");
-      setName(`anon-${socket.id}`);
-      setConnected(true);
       console.log("joining room", currentRoom);
-
+      socket.on("userName", ({ userName }) => {
+        setName(userName);
+      });
+      setConnected(true);
       socket.emit("join", currentRoom);
     });
     socket.on("disconnect", () => {
       console.log("Disconnected from socket server");
       setConnected(false);
       setName("disconnected");
+    });
+
+    socket.onAny((data) => {
+      console.log("Got event", data);
     });
 
     socket.on("message", (msg) => {
@@ -87,6 +92,7 @@ function App() {
 
   const sendMessage = (e) => {
     e.preventDefault();
+    console.log("Sending message", input);
     socket?.emit("message", {
       text: input,
       room: currentRoom,
@@ -96,12 +102,12 @@ function App() {
 
   const rooms = [
     "General",
-    "C++",
-    "Rust",
-    "Go",
-    "Python",
-    "Java",
-    "JavaScript",
+    "God of War",
+    "Uncharted",
+    "Spiderman",
+    "Nier Automata",
+    "Hellblade",
+    "Cyberpunk",
   ];
 
   return (
@@ -169,7 +175,7 @@ function App() {
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
                         <li>
                           <ul role="list" className="-mx-2 space-y-1">
-                            {rooms?.map((room, index) => (
+                            {rooms?.map((room, _) => (
                               <li
                                 key={room}
                                 className={classNames(
@@ -204,7 +210,7 @@ function App() {
               Rooms
             </h1>
             <ul className="mt-4">
-              {rooms?.map((room, index) => (
+              {rooms?.map((room, _) => (
                 <li
                   key={room}
                   className={classNames(
