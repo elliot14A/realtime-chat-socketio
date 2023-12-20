@@ -38,7 +38,6 @@ async function main() {
       origin: "*",
     },
   });
-  // create a logger middleware for socket io
   handleSocket(io);
   httpServer.listen(PORT, () => {
     logger.info(`server running at port:${PORT}`);
