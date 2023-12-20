@@ -53,7 +53,9 @@ The backend runs on https://localhost:8080
 - Frontend: Built with React for a dynamic and interactive user interface.
 - Backend: Powered by Node.js to handle server-side logic.
 - Database: PostgreSQL is used as the database to store chat messages.
-- Directory Structure
+
+## Directory Structure
+
 - web/: Contains the React frontend code.
 - server/: Includes the Node.js backend code.
 - docker-compose.yml: Defines Docker services for the application.
