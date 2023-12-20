@@ -240,7 +240,9 @@ function App() {
                 <Bars3Icon className="h-6 w-6" aria-hidden="true" />
               </button>
               <div className="flex-1 text-sm font-semibold leading-6 text-white">
-                <h1 className="text-2xl text-white font-bold py-4">{name}</h1>
+                <h1 className="text-2xl text-white font-bold py-4">
+                  {currentRoom}
+                </h1>
               </div>
             </div>
 

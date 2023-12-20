@@ -7,8 +7,10 @@ COPY ./package.json /app
 
 RUN yarn install 
 
+
 COPY . /app
 
+RUN yarn prisma generate
 EXPOSE 8080
 
 CMD ["yarn", "start"]

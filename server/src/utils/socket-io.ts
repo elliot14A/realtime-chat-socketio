@@ -3,7 +3,6 @@ import logger from "./logger";
 import { createuniqueName } from "./uniqueName";
 import { list } from "../services/messages/list";
 import { create } from "../services/messages/create";
-import { Message } from "../services/messages";
 
 export function handleSocket(io: Server) {
   io.on("connection", async (socket) => {
@@ -14,10 +13,10 @@ export function handleSocket(io: Server) {
 
     logger.info(`new user:${userName} with connection id:${socket.id}`);
     socket.on("disconnect", () => {
-      logger.info(`socket disconnect user:${userName}}`);
+      logger.info(`user:${userName} disconnected`);
     });
 
-    socket.on("join", (data) => {
+    socket.on("join", async (data) => {
       currentRoom = data;
       socket.join(data);
       // leave from all rooms expect the current room
@@ -26,16 +25,12 @@ export function handleSocket(io: Server) {
           socket.leave(room);
         }
       });
-      socket.to(currentRoom).emit("messages", { messages: list(currentRoom) });
+      const messages = await list(currentRoom);
+      socket.to(currentRoom).emit("messages", { messages });
     });
 
-    socket.on("message", (data) => {
-      const message: Message = {
-        user: userName,
-        text: data.text,
-        date: new Date().toISOString(),
-      };
-      create(userName, data.text, currentRoom);
+    socket.on("message", async (data) => {
+      const message = await create(userName, data.text, currentRoom);
       socket.to(currentRoom).emit("message", message);
     });
   });

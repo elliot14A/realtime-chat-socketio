@@ -1,5 +1,5 @@
-import { messages } from ".";
-
-export function list(channel: string) {
-  return messages.get(channel) || [];
+import prisma from "../../utils/database";
+export async function list(channel: string) {
+  const messages = await prisma.message.findMany({ where: { channel } });
+  return messages;
 }
