@@ -1,0 +1,58 @@
+version: "3"
+services:
+  database:
+    image: postgres:11.7-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./volumes/postgresql:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      interval: 10s
+      retries: 10
+      timeout: 2s
+    networks:
+      - realtime-chat
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    volumes:
+      - type: bind
+        source: ./server
+        target: /app
+      - /app/node_modules
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    stdin_open: true
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@database:5432/postgres?schem=public
+    depends_on:
+      - database
+    networks:
+      - realtime-chat
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    volumes:
+      - type: bind
+        source: ./web
+        target: /app
+      - /app/node_modules
+    restart: unless-stopped
+    stdin_open: true
+    depends_on:
+      - server
+    ports:
+      - "3000:3000"
+    networks:
+      - realtime-chat
+
+networks:
+  realtime-chat:
