@@ -27,8 +27,11 @@ docker-compose up
 
 # This command will download the necessary images and start the containers for the application.
 
-# Run Prisma Migrations:
+```
 
+### Run Prisma Migrations:
+
+```bash
 # Open a new terminal window/tab and navigate to the project directory:
 
 
@@ -42,6 +45,7 @@ npx prisma migrate dev
 Access the Chat Application:
 
 Open your web browser and go to http://localhost:3000 to access the chat application.
+The backend runs on https://localhost:8080
 
 ## Features
 
